@@ -190,7 +190,7 @@ def db_get_user(user_id = None, email = None):
 
 def db_get_news(user_id = None, news_id = None):
     _db = SQLiteDatabase()
-    con, cur = _db._get_connection()    
+    con, cur = _db._get_connection()
 
     if news_id:
         news = cur.execute('''SELECT
@@ -202,10 +202,8 @@ def db_get_news(user_id = None, news_id = None):
             FROM news AS n
             LEFT JOIN
                 (SELECT news_id, emotion_type FROM news_emotions WHERE user_id = ?) AS neu ON neu.news_id = n.id
-            WHERE news_id = ?
-            GROUP BY
-                n.id''', [user_id, news_id]).fetchone()
-        
+            WHERE n.id = ?''', [user_id, news_id]).fetchone()
+
         news_id = news['id']
         news['photos'] = []
         news['likes'] = 0
@@ -257,6 +255,7 @@ def db_get_news(user_id = None, news_id = None):
 
 
     return news
+
 
 def db_get_emotions(news_id):
     _db = SQLiteDatabase()
@@ -387,6 +386,9 @@ def db_get_votes(user_id = None, votes_id = None):
         votes[i]['votes'] = [n[1] for n in v.items()]
         votes[i]['elected'] = x['elected'].split(',') if x['elected'] else []
         votes[i]['votedPersonsId'] = srjtwipsue_ids['user_ids'].split(',') if 'user_ids' in srjtwipsue_ids and srjtwipsue_ids['user_ids'] else []
+        votes[i]['getCounter'] = len(votes[i]['votedPersonsId'])
+        votes[i]['counter'] = len(votes[i]['votedPersonsId'])
+
 
     return votes
 
