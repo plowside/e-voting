@@ -196,6 +196,7 @@ def db_get_news(user_id = None, news_id = None):
         news = cur.execute('''SELECT
                 n.id,
                 n.header,
+                n.content,
                 n.group_name AS grup,
                 COALESCE(neu.emotion_type, False) AS cur_mark,
                 n.creation_date AS createdAt
@@ -226,6 +227,7 @@ def db_get_news(user_id = None, news_id = None):
         news = cur.execute('''SELECT
                 n.id,
                 n.header,
+                n.content,
                 n.group_name AS grup,
                 COALESCE(neu.emotion_type, False) AS cur_mark,
                 n.creation_date AS createdAt

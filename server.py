@@ -24,42 +24,6 @@ from dbApi import *
 
 app = FastAPI()
 
-class WebSocketManager:
-    def __init__(self):
-        self.websocket_connections: Dict[WebSocket, int] = {}
-
-    async def connect(self, websocket: WebSocket, user_id: int):
-        await websocket.accept()
-        self.websocket_connections[websocket] = user_id
-
-    async def disconnect(self, websocket: WebSocket):
-        user_id = self.websocket_connections.get(websocket)
-        if user_id:
-            del self.websocket_connections[websocket]
-
-    async def on_disconnect(self, websocket: WebSocket):
-        try:
-            await websocket.close()
-        except: pass
-
-        await self.disconnect(websocket)
-
-
-    async def send_message(self, websocket: WebSocket, message):
-        if type(message) == str:
-            await websocket.send_text(message)
-        elif type(message) == dict:
-            await websocket.send_json(message)
-
-
-    def get_connection(self, user_id):
-        connection = [x for x, z in self.websocket_connections.items() if z == user_id]
-        if connection: return connection[0]
-        else: return False
-
-manager = WebSocketManager()
-
-
 
 
 ########################################## ROUTES => PAGES #################################################
