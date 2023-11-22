@@ -371,6 +371,7 @@ def db_get_votes(user_id = None, votes_id = None):
                     votes_vars AS vv ON vv.vote_id = v.id
                 GROUP BY v.id
                 ''').fetchall()
+    
     for i,x in enumerate(votes):
         temp = cur.execute('''SELECT * FROM votes_elects WHERE vote_id = ?''', [x['id']]).fetchall()
         votes_ids = cur.execute('''SELECT
@@ -462,7 +463,7 @@ def db_update_vote(vote_id, payload):
     z = json.loads(payload.model_dump_json())
     if 'elected' in z:
         xczx = [x['election_name'] for x in cur.execute('SELECT election_name FROM votes_vars WHERE vote_id = ?', [vote_id]).fetchall()]
-    print(xczx)
+
     for x in z:
         if x == 'header':
             args.append(f'header = "{z[x]}"')
@@ -472,7 +473,6 @@ def db_update_vote(vote_id, payload):
             args.append(f'ending_date = {int(z[x])}')
         elif x == 'elected':
             for c in z[x]:
-                print('check [%s]: %s'%(c, cur.execute('SELECT id FROM votes_vars WHERE election_name = ?', [c]).fetchone()))
                 if not cur.execute('SELECT id FROM votes_vars WHERE election_name = ?', [c]).fetchone():
                     cur.execute('INSERT INTO votes_vars (election_name, vote_id, creation_date) VALUES (?, ?, ?)', [c, vote_id, ts])
                 else: xczx.pop(xczx.index(c))
